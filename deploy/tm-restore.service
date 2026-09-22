@@ -1,0 +1,13 @@
+[Unit]
+Description=tm restore (再起動後に常用tmuxセッションを復元)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/mtb-linux/github/tmux-session-manager
+ExecStart=/usr/bin/python3 /home/mtb-linux/github/tmux-session-manager/tm.py restore
+StandardOutput=append:/home/mtb-linux/github/tmux-session-manager/tm-restore.log
+StandardError=append:/home/mtb-linux/github/tmux-session-manager/tm-restore.log
+
+[Install]
+WantedBy=default.target
