@@ -1,0 +1,93 @@
+{
+  "name": "tm-sessions",
+  "displayName": "AI Sessions (tm)",
+  "description": "Codex / Claude Code の tmux セッションをサイドバーから一覧・アタッチ・状態確認する拡張機能",
+  "version": "0.0.1",
+  "publisher": "mtb-local",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toruy55-coder/tmux-session-manager.git",
+    "directory": "vscode-extension"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onView:tmSessions.view"],
+  "main": "./out/extension.js",
+  "extensionKind": ["workspace"],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tmSessions",
+          "title": "AI Sessions",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "tmSessions": [
+        {
+          "id": "tmSessions.view",
+          "name": "セッション"
+        }
+      ]
+    },
+    "commands": [
+      { "command": "tmSessions.refresh", "title": "更新", "icon": "$(refresh)" },
+      { "command": "tmSessions.attach", "title": "アタッチ", "icon": "$(terminal)" },
+      { "command": "tmSessions.newSession", "title": "新規セッション作成", "icon": "$(add)" },
+      { "command": "tmSessions.editMemo", "title": "メモを編集", "icon": "$(edit)" }
+    ],
+    "menus": {
+      "view/title": [
+        { "command": "tmSessions.refresh", "when": "view == tmSessions.view", "group": "navigation" },
+        { "command": "tmSessions.newSession", "when": "view == tmSessions.view", "group": "navigation" }
+      ],
+      "view/item/context": [
+        { "command": "tmSessions.attach", "when": "view == tmSessions.view && viewItem == session" },
+        { "command": "tmSessions.editMemo", "when": "view == tmSessions.view && viewItem == session" }
+      ]
+    },
+    "configuration": {
+      "title": "AI Sessions (tm)",
+      "properties": {
+        "tmSessions.hosts": {
+          "type": "array",
+          "description": "監視対象ホストの一覧。ssh を省略するとローカルの tmux を見る。",
+          "default": [
+            { "label": "Mac mini (ローカル)" }
+          ],
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": { "type": "string" },
+              "ssh": { "type": "string", "description": "~/.ssh/config のHost名、または user@host" }
+            },
+            "required": ["label"]
+          }
+        },
+        "tmSessions.memoPath": {
+          "type": "string",
+          "default": "~/sync/logs/tmux-sessions_notes.json",
+          "description": "既存 tm ツールのメモ保存先（各ホスト上のパス）"
+        },
+        "tmSessions.pollIntervalSec": {
+          "type": "number",
+          "default": 5,
+          "description": "サイドバーの自動更新間隔（秒）"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
